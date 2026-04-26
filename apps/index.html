@@ -1,94 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevRel AI Lab — App Directory</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1A1A1A;
-      color: #E0E0E0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
-    h1 {
-      color: #76B900;
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      color: #888;
-      font-size: 1rem;
-      margin-bottom: 40px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1000px;
-      width: 100%;
-    }
-    .card {
-      background: #2A2A2A;
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid #333;
-      transition: border-color 0.2s, transform 0.2s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .card:hover {
-      border-color: #76B900;
-      transform: translateY(-2px);
-    }
-    .card h3 { color: #76B900; margin-bottom: 8px; }
-    .card p { color: #999; font-size: 0.9rem; }
-    .badge {
-      display: inline-block;
-      background: #76B900;
-      color: #1A1A1A;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-top: 12px;
-    }
-    .empty {
-      text-align: center;
-      color: #666;
-      padding: 60px 20px;
-      max-width: 500px;
-    }
-    .empty h2 { color: #76B900; margin-bottom: 16px; }
-    .nvidia-logo { font-size: 0.85rem; color: #555; margin-top: 40px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevRel AI Lab — Instructions</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1A1A1A;color:#E0E0E0;line-height:1.7;padding:0}
+.hero{background:linear-gradient(135deg,#1A1A1A 0%,#2a2a2a 100%);padding:60px 20px 40px;text-align:center;border-bottom:3px solid #76B900}
+.hero h1{font-size:2.2rem;color:#76B900;margin-bottom:8px}
+.hero p{color:#999;font-size:1.1rem;max-width:600px;margin:0 auto}
+.container{max-width:800px;margin:0 auto;padding:24px 20px 60px}
+h2{color:#76B900;font-size:1.4rem;margin:36px 0 16px;padding-bottom:8px;border-bottom:1px solid #333}
+h3{color:#E0E0E0;font-size:1.1rem;margin:24px 0 10px}
+p,li{font-size:.95rem;color:#CCC}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li{margin-bottom:6px}
+code{background:#2E2E2E;padding:2px 7px;border-radius:4px;font-size:.88rem;font-family:'SF Mono','Fira Code',Consolas,monospace;color:#76B900}
+pre{background:#111;border:1px solid #333;border-radius:10px;padding:20px;margin:16px 0;overflow-x:auto;line-height:1.5;font-size:.85rem}
+pre code{background:none;padding:0;color:#E0E0E0}
+.card{background:#242424;border:1px solid #333;border-radius:12px;padding:20px 24px;margin:16px 0}
+.card h3{margin-top:0;color:#76B900}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:600;margin-right:6px}
+.badge-easy{background:#76B90022;color:#76B900}
+.badge-medium{background:#00AEEF22;color:#00AEEF}
+.badge-advanced{background:#FF6F0022;color:#FF6F00}
+.color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}
+.color-opt{background:#2E2E2E;border:1px solid #333;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:.88rem}
+.color-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#76B900;color:#111;border-radius:50%;font-weight:700;font-size:.9rem;margin-right:10px;flex-shrink:0}
+.step{display:flex;align-items:flex-start;margin-bottom:20px}
+.step-content{flex:1}
+.step-content h3{margin-top:0}
+.help-card{background:#1e2a1a;border:1px solid #76B90044;border-radius:10px;padding:16px 20px;margin:10px 0}
+.help-card h4{color:#76B900;margin-bottom:6px;font-size:.9rem}
+.footer{text-align:center;padding:40px 20px;color:#555;font-size:.85rem;border-top:1px solid #333}
+a{color:#00AEEF}
+.cta{display:inline-block;background:#76B900;color:#111;padding:12px 28px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;margin-top:16px}
+.cta:hover{background:#8AD400}
+</style>
 </head>
 <body>
+
+<div class="hero">
   <h1>🚀 DevRel AI Lab</h1>
-  <p class="subtitle">Event Engagement Trackers — built by the team, powered by AI</p>
+  <p>Build your own Event Engagement Tracker in 30 minutes — no coding required</p>
+  <a href="./shashi/" class="cta">See the Reference App →</a>
+</div>
 
-  <div class="empty">
-    <h2>Apps coming soon!</h2>
-    <p>During the lab session, each team member will build their own Event Engagement Tracker by talking to an AI bot. Their apps will appear here.</p>
+<div class="container">
+
+<h2>📋 Before the Session</h2>
+
+<div class="step">
+  <span class="step-num">1</span>
+  <div class="step-content">
+    <h3>Open your Telegram bot</h3>
+    <p>Your bot has been set up for you. Open Telegram and find your assigned bot (shared in the meeting invite).</p>
   </div>
+</div>
 
-  <!-- After the lab, this will be replaced with cards linking to each participant's app -->
-  <!--
-  <div class="grid">
-    <a href="./shashi/" class="card">
-      <h3>Shashi's Event Tracker</h3>
-      <p>Conferences, workshops, and developer meetups</p>
-      <span class="badge">LIVE</span>
-    </a>
+<div class="step">
+  <span class="step-num">2</span>
+  <div class="step-content">
+    <h3>Say hello</h3>
+    <p>Send your bot: <code>Hello! Are you there?</code> — it should reply. If it doesn't, let Shashi know.</p>
   </div>
-  -->
+</div>
 
-  <p class="nvidia-logo">NVIDIA Developer Relations</p>
+<div class="step">
+  <span class="step-num">3</span>
+  <div class="step-content">
+    <h3>You're ready!</h3>
+    <p>No accounts to create, no software to install. That's it.</p>
+  </div>
+</div>
+
+<h2>🏗️ During the Session</h2>
+
+<h3>Step 1: Pick your style</h3>
+<p>Choose an accent color for your app:</p>
+<div class="color-grid">
+  <div class="color-opt"><div class="color-dot" style="background:#00AEEF"></div> Blue #00AEEF</div>
+  <div class="color-opt"><div class="color-dot" style="background:#FF6F00"></div> Orange #FF6F00</div>
+  <div class="color-opt"><div class="color-dot" style="background:#9B59B6"></div> Purple #9B59B6</div>
+  <div class="color-opt"><div class="color-dot" style="background:#E74C3C"></div> Red #E74C3C</div>
+  <div class="color-opt"><div class="color-dot" style="background:#1ABC9C"></div> Teal #1ABC9C</div>
+  <div class="color-opt"><div class="color-dot" style="background:#F39C12"></div> Gold #F39C12</div>
+</div>
+
+<h3>Step 2: Paste the prompt</h3>
+<p>Copy this into your Telegram bot. <strong>Replace the 3 fields in [BRACKETS]</strong> with your info:</p>
+
+<pre><code>Build me a single-file web app called "[YOUR NAME]'s Event Tracker".
+
+Requirements:
+- One HTML file, all CSS and JS inline, no external dependencies
+- NVIDIA dark theme: background #1A1A1A, primary green #76B900, accent [YOUR COLOR]
+- Responsive, clean, professional design
+
+Pages (use hash routing):
+
+1. DASHBOARD (#dashboard) — default page
+   - 4 metric cards: Total Events, Total Attendees, Avg Rating, Upcoming Count
+   - Bar chart of events per month (use canvas)
+   - List of 5 most recent events
+
+2. EVENTS (#events)
+   - Searchable, filterable list of all events
+   - Each event: name, type, date, location, attendee count, status badge
+   - Add/edit event form (name, type, date, location, description)
+   - Types: conference, workshop, meetup, webinar, office hours
+
+3. EVENT DETAIL (#event/:id)
+   - Event info header with status
+   - Attendee table (name, email, company, RSVP, checked-in toggle)
+   - Add attendee form
+   - Feedback section: avg rating display + add feedback (1-5 stars, comment)
+
+4. SETTINGS (#settings)
+   - Display name: [YOUR NAME]
+   - Team: [YOUR TEAM]
+   - Export/import data as JSON
+   - Clear all data (with confirmation)
+
+Data: localStorage. Seed with 5 demo events so it's not empty.
+Make it look polished — I'll actually use this.
+
+Save the file as index.html in my workspace.</code></pre>
+
+<h3>Step 3: Wait (~1-2 min)</h3>
+<p>Your bot will generate the app. When it's done, it will tell you.</p>
+
+<h3>Step 4: Deploy it</h3>
+<p>Tell your bot:</p>
+<pre><code>Push my index.html to GitHub. Put it at apps/[yourname]/index.html
+in the repo sbhushan-nvidia/devrel-ai-lab on the main branch.
+Use the GitHub token configured in your environment.</code></pre>
+<p>Your app will be live at: <code>https://sbhushan-nvidia.github.io/devrel-ai-lab/yourname/</code></p>
+
+<h3>Step 5: Customize!</h3>
+<p>This is the fun part. Talk to your bot to change anything:</p>
+
+<div class="card">
+  <h3>💡 Customization Ideas</h3>
+
+  <p><span class="badge badge-easy">Easy</span> One message each:</p>
+  <ul>
+    <li>"Add a notes field to events"</li>
+    <li>"Change event types to: conference, hackathon, demo day, webinar, meetup"</li>
+    <li>"Add a budget field to events"</li>
+    <li>"Add a countdown to the next upcoming event on the dashboard"</li>
+    <li>"Make the status badges more colorful"</li>
+  </ul>
+
+  <p><span class="badge badge-medium">Medium</span> A bit more complex:</p>
+  <ul>
+    <li>"Add a pie chart showing events by type on the dashboard"</li>
+    <li>"Add CSV export for the attendee list"</li>
+    <li>"Add a search bar that searches across all events and attendees"</li>
+    <li>"Add a dark/light mode toggle"</li>
+    <li>"Show a monthly calendar view of events"</li>
+  </ul>
+
+  <p><span class="badge badge-advanced">Advanced</span> Push the limits:</p>
+  <ul>
+    <li>"Add an email button that opens mailto: with all attendee emails"</li>
+    <li>"Add tags to events and let me filter by tag"</li>
+    <li>"Add a 'duplicate event' button that copies an event as a template"</li>
+    <li>"Add a timeline view showing events on a horizontal timeline"</li>
+    <li>"Add print-friendly styling for the event detail page"</li>
+  </ul>
+</div>
+
+<p>After each change, tell the bot to push the updated file to GitHub again.</p>
+
+<h2>🆘 If Something Goes Wrong</h2>
+
+<div class="help-card">
+  <h4>App has errors?</h4>
+  <code>The app has an error. Please fix it and make sure it loads correctly.</code>
+</div>
+
+<div class="help-card">
+  <h4>Styling looks off?</h4>
+  <code>Fix the styling. Use dark background #1A1A1A, green #76B900 headers, and clean modern design.</code>
+</div>
+
+<div class="help-card">
+  <h4>Want to start over?</h4>
+  <code>Start fresh. Rebuild the entire app from scratch using the same requirements.</code>
+</div>
+
+<div class="help-card">
+  <h4>Bot is confused?</h4>
+  <code>Ignore previous errors. Generate a complete single HTML file with [describe what you want].</code>
+</div>
+
+<h2>🎯 After the Session</h2>
+
+<p>Your app lives at <code>sbhushan-nvidia.github.io/devrel-ai-lab/yourname/</code> — keep building anytime.</p>
+
+<p><strong>What else could you build?</strong></p>
+<ul>
+  <li>A personal CRM for developer contacts</li>
+  <li>A talk proposal tracker</li>
+  <li>A content calendar</li>
+  <li>A demo inventory / asset manager</li>
+  <li>A trip planner for event travel</li>
+</ul>
+
+</div>
+
+<div class="footer">
+  NVIDIA Developer Relations · Powered by OpenClaw + AI
+</div>
+
 </body>
 </html>
