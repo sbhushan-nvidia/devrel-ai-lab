@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shashi's Event Tracker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1A1A1A;--surface:#242424;--surface2:#2E2E2E;--border:#383838;--text:#E8E8E8;--text2:#999;--green:#76B900;--accent:#00AEEF;--red:#E74C3C;--orange:#FF6F00;--yellow:#F1C40F}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+a{color:var(--accent);text-decoration:none}
+/* NAV */
+.nav{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:10}
+.nav-brand{padding:16px 20px;font-size:1.1rem;font-weight:700;color:var(--green);border-bottom:1px solid var(--border);margin-bottom:8px}
+.nav-brand small{display:block;font-size:.75rem;color:var(--text2);font-weight:400;margin-top:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:12px 20px;color:var(--text2);font-size:.9rem;transition:all .15s}
+.nav a:hover,.nav a.active{color:var(--text);background:var(--surface2)}
+.nav a.active{border-left:3px solid var(--green);color:var(--green)}
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:24px 32px;max-width:1200px;width:100%}
+h1{font-size:1.5rem;margin-bottom:20px;color:var(--text)}
+h2{font-size:1.15rem;margin-bottom:14px;color:var(--text)}
+/* CARDS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.metric-card .label{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.metric-card .value{font-size:2rem;font-weight:700;color:var(--green);margin-top:4px}
+.metric-card .sub{font-size:.8rem;color:var(--text2);margin-top:2px}
+/* TABLE */
+table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+th{background:var(--surface2);color:var(--text2);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+td{padding:10px 16px;border-top:1px solid var(--border);font-size:.9rem}
+tr:hover td{background:var(--surface2)}
+/* BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:600}
+.badge-upcoming{background:#76B90022;color:var(--green)}
+.badge-active{background:#00AEEF22;color:var(--accent)}
+.badge-completed{background:#99999922;color:var(--text2)}
+.badge-cancelled{background:#E74C3C22;color:var(--red)}
+/* BUTTONS */
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--green);color:#111}
+.btn-primary:hover{background:#8AD400}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--green)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+input,select,textarea{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green)}
+textarea{resize:vertical;min-height:60px}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h2{margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+/* CHART */
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:24px}
+canvas{width:100%!important;max-height:220px}
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px}
+.search-bar select{width:auto;min-width:140px}
+/* STARS */
+.stars{display:inline-flex;gap:2px;cursor:pointer;font-size:1.4rem}
+.stars span{color:var(--border);transition:color .15s}
+.stars span.filled{color:var(--yellow)}
+.stars span:hover,.stars span:hover~span{color:var(--yellow)}
+/* FEEDBACK */
+.feedback-item{background:var(--surface2);border-radius:8px;padding:12px 16px;margin-bottom:8px}
+.feedback-item .rating{color:var(--yellow);margin-bottom:4px}
+.feedback-item .comment{color:var(--text);font-size:.9rem}
+.feedback-item .meta{color:var(--text2);font-size:.78rem;margin-top:4px}
+/* SECTION */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+/* RESPONSIVE */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:20;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;color:var(--text);font-size:1.2rem}
+@media(max-width:768px){
+  .nav{transform:translateX(-100%);transition:transform .2s}
+  .nav.open{transform:translateX(0)}
+  .main{margin-left:0;padding:16px}
+  .hamburger{display:block}
+  .metrics{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){.metrics{grid-template-columns:1fr}}
+/* MISC */
+.empty-state{text-align:center;padding:40px;color:var(--text2)}
+.clickable{cursor:pointer}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.gap-10{gap:10px}
+.check-toggle{cursor:pointer;font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    ⚡ Shashi's Tracker
+    <small>Developer Relations</small>
+  </div>
+  <a href="#dashboard" data-page="dashboard">📊 Dashboard</a>
+  <a href="#events" data-page="events">📅 Events</a>
+  <a href="#settings" data-page="settings">⚙️ Settings</a>
+</nav>
+
+<div class="main" id="app"></div>
+
+<script>
+// ============ DATA LAYER ============
+const STORAGE_KEY = 'evt_tracker_data';
+const DEFAULT_SETTINGS = {name:'Shashi',team:'Developer Relations',accent:'#00AEEF'};
+
+function loadData(){
+  try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY));return d&&d.events?d:{events:[],settings:{...DEFAULT_SETTINGS}};}
+  catch(e){return {events:[],settings:{...DEFAULT_SETTINGS}};}
+}
+function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+let DATA = loadData();
+
+// ============ ROUTER ============
+function getRoute(){
+  const h=location.hash.slice(1)||'dashboard';
+  const parts=h.split('/');
+  return {page:parts[0],id:parts[1]||null};
+}
+
+function navigate(){
+  const r=getRoute();
+  document.querySelectorAll('.nav a').forEach(a=>{
+    a.classList.toggle('active',a.dataset.page===r.page||(r.page==='event'&&a.dataset.page==='events'));
+  });
+  document.querySelector('.nav').classList.remove('open');
+  const app=document.getElementById('app');
+  if(r.page==='dashboard') renderDashboard(app);
+  else if(r.page==='events') renderEvents(app);
+  else if(r.page==='event'&&r.id) renderEventDetail(app,r.id);
+  else if(r.page==='settings') renderSettings(app);
+  else renderDashboard(app);
+}
+
+window.addEventListener('hashchange',navigate);
+window.addEventListener('load',navigate);
+
+// ============ DASHBOARD ============
+function renderDashboard(el){
+  const events=DATA.events;
+  const now=new Date().toISOString().slice(0,10);
+  const totalEvents=events.length;
+  const totalAttendees=events.reduce((s,e)=>(e.attendees||[]).length+s,0);
+  const allFeedback=events.flatMap(e=>e.feedback||[]);
+  const avgRating=allFeedback.length?((allFeedback.reduce((s,f)=>s+f.rating,0)/allFeedback.length).toFixed(1)):'—';
+  const upcoming=events.filter(e=>e.date>=now&&e.status!=='cancelled').length;
+  const recent=events.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+
+  el.innerHTML=`
+    <h1>📊 Dashboard</h1>
+    <div class="metrics">
+      <div class="metric-card"><div class="label">Total Events</div><div class="value">${totalEvents}</div></div>
+      <div class="metric-card"><div class="label">Total Attendees</div><div class="value">${totalAttendees}</div></div>
+      <div class="metric-card"><div class="label">Avg Rating</div><div class="value">${avgRating}</div><div class="sub">out of 5 stars</div></div>
+      <div class="metric-card"><div class="label">Upcoming</div><div class="value">${upcoming}</div></div>
+    </div>
+    <div class="chart-container">
+      <h2>Events by Month</h2>
+      <canvas id="chart" height="200"></canvas>
+    </div>
+    <div class="section">
+      <h2>Recent Events</h2>
+      ${recent.length?recent.map(e=>`
+        <div class="flex-between clickable" style="padding:10px 0;border-bottom:1px solid var(--border)" onclick="location.hash='event/${e.id}'">
+          <div>
+            <strong>${esc(e.title)}</strong>
+            <div style="color:var(--text2);font-size:.82rem">${e.date} · ${esc(e.location||'TBD')} · ${(e.attendees||[]).length} attendees</div>
+          </div>
+          <span class="badge badge-${e.status}">${e.status}</span>
+        </div>
+      `).join(''):'<div class="empty-state">No events yet. <a href="#events">Create one →</a></div>'}
+    </div>
+  `;
+  drawChart(events);
+}
+
+function drawChart(events){
+  const canvas=document.getElementById('chart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-40;
+  canvas.height=200;
+
+  // Group by month
+  const months={};
+  events.forEach(e=>{
+    const m=e.date.slice(0,7);
+    months[m]=(months[m]||0)+1;
+  });
+
+  // Last 12 months
+  const labels=[];
+  const d=new Date();
+  for(let i=11;i>=0;i--){
+    const dt=new Date(d.getFullYear(),d.getMonth()-i,1);
+    labels.push(dt.toISOString().slice(0,7));
+  }
+  const values=labels.map(l=>months[l]||0);
+  const max=Math.max(...values,1);
+
+  const w=canvas.width, h=canvas.height;
+  const pad={t:10,b:30,l:10,r:10};
+  const bw=(w-pad.l-pad.r)/labels.length;
+
+  ctx.clearRect(0,0,w,h);
+
+  // Bars
+  values.forEach((v,i)=>{
+    const bh=(v/max)*(h-pad.t-pad.b);
+    const x=pad.l+i*bw+bw*.15;
+    const y=h-pad.b-bh;
+    ctx.fillStyle=v>0?'#76B900':'#333';
+    ctx.beginPath();
+    ctx.roundRect(x,y,bw*.7,bh,4);
+    ctx.fill();
+
+    // Value on top
+    if(v>0){
+      ctx.fillStyle='#999';
+      ctx.font='11px sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText(v,x+bw*.35,y-4);
+    }
+
+    // Month label
+    ctx.fillStyle='#666';
+    ctx.font='10px sans-serif';
+    ctx.textAlign='center';
+    const ml=labels[i].slice(5);
+    ctx.fillText(ml,x+bw*.35,h-pad.b+16);
+  });
+}
+
+// ============ EVENTS LIST ============
+function renderEvents(el){
+  let filtered=[...DATA.events];
+  el.innerHTML=`
+    <div class="flex-between mb-8">
+      <h1>📅 Events</h1>
+      <button class="btn btn-primary" onclick="showEventForm()">+ New Event</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search events..." oninput="filterEvents()">
+      <select id="typeFilter" onchange="filterEvents()">
+        <option value="">All Types</option>
+        <option value="conference">Conference</option>
+        <option value="workshop">Workshop</option>
+        <option value="meetup">Meetup</option>
+        <option value="webinar">Webinar</option>
+        <option value="office hours">Office Hours</option>
+      </select>
+      <select id="statusFilter" onchange="filterEvents()">
+        <option value="">All Status</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div id="eventsList"></div>
+  `;
+  filterEvents();
+}
+
+function filterEvents(){
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  const t=document.getElementById('typeFilter')?.value||'';
+  const s=document.getElementById('statusFilter')?.value||'';
+  let list=[...DATA.events];
+  if(q) list=list.filter(e=>e.title.toLowerCase().includes(q)||e.location?.toLowerCase().includes(q));
+  if(t) list=list.filter(e=>e.type===t);
+  if(s) list=list.filter(e=>e.status===s);
+  list.sort((a,b)=>b.date.localeCompare(a.date));
+
+  const container=document.getElementById('eventsList');
+  if(!container)return;
+  if(!list.length){container.innerHTML='<div class="empty-state">No events found</div>';return;}
+  container.innerHTML=`<table>
+    <thead><tr><th>Event</th><th>Type</th><th>Date</th><th>Location</th><th>Attendees</th><th>Status</th></tr></thead>
+    <tbody>${list.map(e=>`
+      <tr class="clickable" onclick="location.hash='event/${e.id}'">
+        <td><strong>${esc(e.title)}</strong></td>
+        <td>${esc(e.type)}</td>
+        <td>${e.date}</td>
+        <td>${esc(e.location||'—')}</td>
+        <td>${(e.attendees||[]).length}</td>
+        <td><span class="badge badge-${e.status}">${e.status}</span></td>
+      </tr>
+    `).join('')}</tbody>
+  </table>`;
+}
+
+// ============ EVENT FORM MODAL ============
+function showEventForm(id){
+  const e=id?DATA.events.find(x=>x.id===id):null;
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove();};
+  overlay.innerHTML=`
+    <div class="modal">
+      <h2>${e?'Edit Event':'New Event'}</h2>
+      <div class="form-group"><label>Title</label><input id="ef_title" value="${esc(e?.title||'')}"></div>
+      <div class="form-group"><label>Type</label>
+        <select id="ef_type">
+          ${['conference','workshop','meetup','webinar','office hours'].map(t=>`<option value="${t}" ${e?.type===t?'selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Date</label><input type="date" id="ef_date" value="${e?.date||new Date().toISOString().slice(0,10)}"></div>
+      <div class="form-group"><label>Location</label><input id="ef_loc" value="${esc(e?.location||'')}"></div>
+      <div class="form-group"><label>Description</label><textarea id="ef_desc">${esc(e?.description||'')}</textarea></div>
+      <div class="form-group"><label>Status</label>
+        <select id="ef_status">
+          ${['upcoming','active','completed','cancelled'].map(s=>`<option value="${s}" ${e?.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEvent('${id||''}')">Save</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function saveEvent(id){
+  const get=s=>document.getElementById(s)?.value?.trim()||'';
+  const ev=id?DATA.events.find(x=>x.id===id):null;
+  const obj={
+    id:id||genId(),
+    title:get('ef_title')||'Untitled Event',
+    type:get('ef_type'),
+    date:get('ef_date'),
+    location:get('ef_loc'),
+    description:get('ef_desc'),
+    status:get('ef_status'),
+    attendees:ev?.attendees||[],
+    feedback:ev?.feedback||[]
+  };
+  if(id){const i=DATA.events.findIndex(x=>x.id===id);DATA.events[i]=obj;}
+  else DATA.events.push(obj);
+  saveData(DATA);
+  document.querySelector('.modal-overlay')?.remove();
+  navigate();
+}
+
+// ============ EVENT DETAIL ============
+function renderEventDetail(el,id){
+  const e=DATA.events.find(x=>x.id===id);
+  if(!e){el.innerHTML='<div class="empty-state">Event not found. <a href="#events">Back to events</a></div>';return;}
+  const att=e.attendees||[];
+  const fb=e.feedback||[];
+  const avgR=fb.length?(fb.reduce((s,f)=>s+f.rating,0)/fb.length).toFixed(1):'—';
+
+  el.innerHTML=`
+    <div class="flex-between mb-8">
+      <div>
+        <a href="#events" style="font-size:.85rem">← Back to Events</a>
+        <h1 style="margin-top:8px">${esc(e.title)}</h1>
+        <div style="color:var(--text2);margin-top:4px">
+          <span class="badge badge-${e.status}">${e.status}</span>
+          &nbsp; ${esc(e.type)} · ${e.date} · ${esc(e.location||'TBD')}
+        </div>
+        ${e.description?`<p style="margin-top:10px;color:var(--text2)">${esc(e.description)}</p>`:''}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="showEventForm('${e.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">🗑️ Delete</button>
+      </div>
+    </div>
+
+    <!-- ATTENDEES -->
+    <div class="section">
+      <div class="section-header">
+        <h2>👥 Attendees (${att.length})</h2>
+        <button class="btn btn-primary btn-sm" onclick="showAttendeeForm('${e.id}')">+ Add</button>
+      </div>
+      ${att.length?`<table>
+        <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>RSVP</th><th>Checked In</th><th></th></tr></thead>
+        <tbody>${att.map((a,i)=>`
+          <tr>
+            <td>${esc(a.name)}</td>
+            <td>${esc(a.email)}</td>
+            <td>${esc(a.company||'—')}</td>
+            <td><span class="badge badge-${a.rsvp==='yes'?'upcoming':a.rsvp==='no'?'cancelled':'active'}">${a.rsvp}</span></td>
+            <td><span class="check-toggle" onclick="toggleCheckin('${e.id}',${i})">${a.checkedIn?'✅':'⬜'}</span></td>
+            <td><button class="btn btn-secondary btn-sm" onclick="removeAttendee('${e.id}',${i})">✕</button></td>
+          </tr>
+        `).join('')}</tbody>
+      </table>`:'<div class="empty-state">No attendees yet</div>'}
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="section">
+      <div class="section-header">
+        <h2>⭐ Feedback (${fb.length}) ${fb.length?`· Avg: ${avgR}/5`:''}</h2>
+        <button class="btn btn-primary btn-sm" onclick="showFeedbackForm('${e.id}')">+ Add</button>
+      </div>
+      ${fb.length?fb.map(f=>`
+        <div class="feedback-item">
+          <div class="rating">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</div>
+          ${f.comment?`<div class="comment">${esc(f.comment)}</div>`:''}
+          <div class="meta">${f.timestamp||''}</div>
+        </div>
+      `).join(''):'<div class="empty-state">No feedback yet</div>'}
+    </div>
+  `;
+}
+
+function deleteEvent(id){
+  if(!confirm('Delete this event?'))return;
+  DATA.events=DATA.events.filter(e=>e.id!==id);
+  saveData(DATA);
+  location.hash='events';
+}
+
+function toggleCheckin(eid,idx){
+  const e=DATA.events.find(x=>x.id===eid);
+  if(e&&e.attendees[idx]){e.attendees[idx].checkedIn=!e.attendees[idx].checkedIn;saveData(DATA);navigate();}
+}
+
+function removeAttendee(eid,idx){
+  const e=DATA.events.find(x=>x.id===eid);
+  if(e){e.attendees.splice(idx,1);saveData(DATA);navigate();}
+}
+
+// ============ ATTENDEE FORM ============
+function showAttendeeForm(eid){
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove();};
+  overlay.innerHTML=`
+    <div class="modal">
+      <h2>Add Attendee</h2>
+      <div class="form-group"><label>Name</label><input id="af_name"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="af_email"></div>
+      <div class="form-group"><label>Company</label><input id="af_company"></div>
+      <div class="form-group"><label>RSVP</label>
+        <select id="af_rsvp"><option value="yes">Yes</option><option value="maybe">Maybe</option><option value="no">No</option></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAttendee('${eid}')">Add</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function saveAttendee(eid){
+  const get=s=>document.getElementById(s)?.value?.trim()||'';
+  const e=DATA.events.find(x=>x.id===eid);
+  if(!e)return;
+  if(!e.attendees)e.attendees=[];
+  e.attendees.push({id:genId(),name:get('af_name')||'Unknown',email:get('af_email'),company:get('af_company'),rsvp:get('af_rsvp'),checkedIn:false});
+  saveData(DATA);
+  document.querySelector('.modal-overlay')?.remove();
+  navigate();
+}
+
+// ============ FEEDBACK FORM ============
+let feedbackRating=0;
+function showFeedbackForm(eid){
+  feedbackRating=0;
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove();};
+  overlay.innerHTML=`
+    <div class="modal">
+      <h2>Add Feedback</h2>
+      <div class="form-group"><label>Rating</label>
+        <div class="stars" id="starPicker">${[1,2,3,4,5].map(n=>`<span onclick="setRating(${n})" data-n="${n}">☆</span>`).join('')}</div>
+      </div>
+      <div class="form-group"><label>Comment</label><textarea id="ff_comment" placeholder="Optional feedback..."></textarea></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveFeedback('${eid}')">Submit</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function setRating(n){
+  feedbackRating=n;
+  document.querySelectorAll('#starPicker span').forEach(s=>{
+    s.textContent=parseInt(s.dataset.n)<=n?'★':'☆';
+    s.classList.toggle('filled',parseInt(s.dataset.n)<=n);
+  });
+}
+
+function saveFeedback(eid){
+  if(!feedbackRating){alert('Please select a rating');return;}
+  const e=DATA.events.find(x=>x.id===eid);
+  if(!e)return;
+  if(!e.feedback)e.feedback=[];
+  e.feedback.push({
+    id:genId(),
+    rating:feedbackRating,
+    comment:document.getElementById('ff_comment')?.value?.trim()||'',
+    timestamp:new Date().toLocaleDateString()
+  });
+  saveData(DATA);
+  document.querySelector('.modal-overlay')?.remove();
+  navigate();
+}
+
+// ============ SETTINGS ============
+function renderSettings(el){
+  const s=DATA.settings||DEFAULT_SETTINGS;
+  el.innerHTML=`
+    <h1>⚙️ Settings</h1>
+    <div class="section">
+      <h2>Profile</h2>
+      <div class="form-group"><label>Display Name</label><input id="s_name" value="${esc(s.name)}"></div>
+      <div class="form-group"><label>Team</label><input id="s_team" value="${esc(s.team)}"></div>
+      <div class="form-group"><label>Accent Color</label><input type="color" id="s_accent" value="${s.accent}" style="height:42px;cursor:pointer"></div>
+      <button class="btn btn-primary mt-16" onclick="saveSettings()">Save Settings</button>
+    </div>
+    <div class="section">
+      <h2>Data Management</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="exportData()">📤 Export JSON</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        <button class="btn btn-danger" onclick="clearData()">🗑️ Clear All Data</button>
+      </div>
+    </div>
+    <div class="section">
+      <h2>About</h2>
+      <p style="color:var(--text2);font-size:.9rem">
+        Built with ⚡ by ${esc(s.name)} · ${esc(s.team)}<br>
+        Powered by OpenClaw + AI · NVIDIA Developer Relations
+      </p>
+    </div>
+  `;
+}
+
+function saveSettings(){
+  DATA.settings={
+    name:document.getElementById('s_name')?.value?.trim()||'User',
+    team:document.getElementById('s_team')?.value?.trim()||'Team',
+    accent:document.getElementById('s_accent')?.value||'#00AEEF'
+  };
+  document.documentElement.style.setProperty('--accent',DATA.settings.accent);
+  saveData(DATA);
+  // Update nav brand
+  const brand=document.querySelector('.nav-brand');
+  if(brand){brand.innerHTML=`⚡ ${esc(DATA.settings.name)}'s Tracker<small>${esc(DATA.settings.team)}</small>`;}
+  alert('Settings saved!');
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='event-tracker-backup.json';
+  a.click();
+}
+
+function importData(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.events){DATA=d;saveData(DATA);navigate();alert('Data imported!');}
+      else alert('Invalid file format');
+    }catch(err){alert('Error reading file');}
+  };
+  reader.readAsText(file);
+}
+
+function clearData(){
+  if(!confirm('Delete ALL events and data? This cannot be undone.'))return;
+  if(!confirm('Are you really sure?'))return;
+  DATA={events:[],settings:{...DEFAULT_SETTINGS}};
+  saveData(DATA);
+  navigate();
+}
+
+// ============ UTILS ============
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Apply saved accent color
+if(DATA.settings?.accent) document.documentElement.style.setProperty('--accent',DATA.settings.accent);
+
+// Seed demo data if empty
+if(!DATA.events.length){
+  const types=['conference','workshop','meetup','webinar','office hours'];
+  const statuses=['completed','completed','completed','upcoming','upcoming','active'];
+  const cities=['San Jose','Seattle','Berlin','Virtual','Austin','London'];
+  const names=['GTC Developer Day','GPU Workshop','CUDA Meetup','AI Webinar','Office Hours','NeurIPS Booth'];
+  for(let i=0;i<6;i++){
+    const d=new Date();d.setDate(d.getDate()-60+i*20);
+    const ev={
+      id:genId(),title:names[i],type:types[i%types.length],
+      date:d.toISOString().slice(0,10),location:cities[i],
+      description:'Auto-generated demo event',status:statuses[i],
+      attendees:[],feedback:[]
+    };
+    for(let j=0;j<Math.floor(Math.random()*8)+3;j++){
+      ev.attendees.push({id:genId(),name:`Attendee ${j+1}`,email:`person${j+1}@example.com`,company:['NVIDIA','Google','Meta','Startup Inc','University'][j%5],rsvp:['yes','yes','maybe','yes','no'][j%5],checkedIn:Math.random()>.4});
+    }
+    for(let j=0;j<Math.floor(Math.random()*4)+1;j++){
+      ev.feedback.push({id:genId(),rating:Math.floor(Math.random()*2)+4,comment:['Great session!','Very informative','Loved the demos','Would attend again','Good content'][j%5],timestamp:d.toLocaleDateString()});
+    }
+    DATA.events.push(ev);
+  }
+  saveData(DATA);
+}
+</script>
+</body>
+</html>
