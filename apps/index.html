@@ -45,38 +45,77 @@ a{color:#00AEEF}
 <div class="hero">
   <h1>🚀 DevRel AI Lab</h1>
   <p>Build your own Event Engagement Tracker in 30 minutes — no coding required</p>
-  <a href="./shashi/" class="cta">See the Reference App →</a>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+    <a href="#prework" class="cta" style="background:#00AEEF">📋 Pre-Work Setup</a>
+    <a href="#lab" class="cta">🏗️ Lab Instructions</a>
+    <a href="./shashi/" class="cta" style="background:var(--surface2,#2E2E2E);border:1px solid #76B900;color:#76B900">Reference App →</a>
+  </div>
 </div>
 
 <div class="container">
 
-<h2>📋 Before the Session</h2>
+<h2 id="prework">📋 Pre-Work (Complete Before the Session)</h2>
+
+<div class="card" style="border-color:#FF6F0066;background:#2a2010">
+  <h3 style="color:#FF6F00">⚠️ Complete these steps at least 1 day before the lab</h3>
+  <p>The lab session is only 30 minutes — there's no time for setup during the session. Budget ~30 minutes for pre-work.</p>
+  <p style="margin-top:8px"><strong>Detailed guide:</strong> <a href="https://github.com/sbhushan-nvidia/devrel-ai-lab/blob/main/PREWORK.md">Full Pre-Work Guide on GitHub</a></p>
+</div>
 
 <div class="step">
   <span class="step-num">1</span>
   <div class="step-content">
-    <h3>Open your Telegram bot</h3>
-    <p>Your bot has been set up for you. Open Telegram and find your assigned bot (shared in the meeting invite).</p>
+    <h3>Set up your DGX Horde pod</h3>
+    <p>Request a pod, SSH in, install OpenClaw, and start the gateway.</p>
+    <pre><code>curl -fsSL https://get.openclaw.ai | bash
+openclaw gateway start</code></pre>
   </div>
 </div>
 
 <div class="step">
   <span class="step-num">2</span>
   <div class="step-content">
-    <h3>Say hello</h3>
-    <p>Send your bot: <code>Hello! Are you there?</code> — it should reply. If it doesn't, let Shashi know.</p>
+    <h3>Create your Telegram bot</h3>
+    <p>Open Telegram → search <strong>@BotFather</strong> → send <code>/newbot</code> → follow prompts → copy the bot token.</p>
+    <p>Then on your pod:</p>
+    <pre><code>openclaw configure --section telegram
+# Paste your bot token when prompted
+openclaw gateway restart</code></pre>
   </div>
 </div>
 
 <div class="step">
   <span class="step-num">3</span>
   <div class="step-content">
-    <h3>You're ready!</h3>
-    <p>No accounts to create, no software to install. That's it.</p>
+    <h3>Set up GitHub</h3>
+    <p>You need: a GitHub account, a personal access token, and a public repo.</p>
+    <ol>
+      <li>Create a <a href="https://github.com/settings/tokens?type=beta">fine-grained token</a> with <strong>Contents + Pages + Administration</strong> (all Read+Write)</li>
+      <li>Create a public repo at <a href="https://github.com/new">github.com/new</a> called <code>my-event-tracker</code></li>
+      <li>Enable GitHub Pages: repo → Settings → Pages → Source: <strong>GitHub Actions</strong></li>
+      <li>On your pod:<pre><code>gh auth login
+# Choose HTTPS, paste your token
+git config --global user.name "Your Name"
+git config --global user.email "you@nvidia.com"</code></pre></li>
+    </ol>
   </div>
 </div>
 
-<h2>🏗️ During the Session</h2>
+<div class="step">
+  <span class="step-num">4</span>
+  <div class="step-content">
+    <h3>Verify everything</h3>
+    <p>Run this on your pod:</p>
+    <pre><code>curl -fsSL https://sbhushan-nvidia.github.io/devrel-ai-lab/verify.sh | bash</code></pre>
+    <p>All green = you're ready. Send a screenshot of the results to Shashi.</p>
+  </div>
+</div>
+
+<h2>📱 Test Your Bot</h2>
+
+<p>Send your bot a message in Telegram: <code>Hello! Are you there?</code> — if it replies, you're good to go.</p>
+
+<h2 id="lab">🏗️ During the Session</h2>
 
 <h3>Step 1: Pick your style</h3>
 <p>Choose an accent color for your app:</p>
@@ -134,10 +173,13 @@ Save the file as index.html in my workspace.</code></pre>
 
 <h3>Step 4: Deploy it</h3>
 <p>Tell your bot:</p>
-<pre><code>Push my index.html to GitHub. Put it at apps/[yourname]/index.html
-in the repo sbhushan-nvidia/devrel-ai-lab on the main branch.
-Use the GitHub token configured in your environment.</code></pre>
-<p>Your app will be live at: <code>https://sbhushan-nvidia.github.io/devrel-ai-lab/yourname/</code></p>
+<pre><code>Deploy my app to GitHub Pages. Here's what to do:
+1. Clone my repo [YOUR-GITHUB-USERNAME]/my-event-tracker
+2. Create a .github/workflows/deploy.yml that deploys to GitHub Pages
+3. Put my index.html at the root
+4. Commit and push to main
+Use the GitHub token configured via gh auth.</code></pre>
+<p>Your app will be live at: <code>https://[your-github-username].github.io/my-event-tracker/</code></p>
 
 <h3>Step 5: Customize!</h3>
 <p>This is the fun part. Talk to your bot to change anything:</p>
@@ -173,7 +215,7 @@ Use the GitHub token configured in your environment.</code></pre>
   </ul>
 </div>
 
-<p>After each change, tell the bot to push the updated file to GitHub again.</p>
+<p>After each change, tell the bot to commit and push the updated file to your repo.</p>
 
 <h2>🆘 If Something Goes Wrong</h2>
 
@@ -199,7 +241,7 @@ Use the GitHub token configured in your environment.</code></pre>
 
 <h2>🎯 After the Session</h2>
 
-<p>Your app lives at <code>sbhushan-nvidia.github.io/devrel-ai-lab/yourname/</code> — keep building anytime.</p>
+<p>Your app lives at <code>https://[your-github-username].github.io/my-event-tracker/</code> — keep building anytime.</p>
 
 <p><strong>What else could you build?</strong></p>
 <ul>
